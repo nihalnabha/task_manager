@@ -85,14 +85,27 @@ def delete():
 # Command to update a task
 @app.command(short_help="Updates an item")
 def update():
-    if not authenticate():  # Check if user is authenticated before performing any action
-        raise typer.Exit()  # Exit if authentication fails
+    """Update the task description and completion status."""
+    if not is_logged_in():  # Check if user is authenticated
+        typer.echo("You need to log in first.")
+        raise typer.Exit()
+
+    # Prompt for task ID to update
     task_id = int(input("Enter the ID of the task to update: "))
-    new_task = input("Enter the new task: ")
+
+    # Prompt for new description (if left blank, use the default value)
     new_description = input("Enter the new description (leave empty for default): ")
+
+    # Prompt for task completion status (1 for completed, 0 for not completed)
     completed = int(input("Is the task completed? (1 for Yes, 0 for No): "))
-    update_task(task_id, new_task, new_description or 'No description', completed)
+
+    # Update only the description and completed status of the task
+    update_task(task_id, new_description or 'No description', completed)
+
+    # Notify the user of the successful update
     typer.echo(f"Task with ID {task_id} updated successfully!")
+
+    # Show the updated list of tasks
     show()
 
 # Command to show all tasks

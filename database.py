@@ -99,11 +99,16 @@ def delete_task(task_id: int):
     conn.commit()
     conn.close()
 
-def update_task(task_id: int, task: str, description: str, completed: int):
-    """Update a task by its ID."""
+def update_task(task_id: int, description: str, completed: int):
+    """Update a task's description and completion status by its ID."""
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
-    cursor.execute("UPDATE tasks SET task = ?, description = ?, completed = ? WHERE id = ?", 
-                   (task, description, completed, task_id))
+    
+    # Update only the description and completed fields, leaving 'task' unchanged
+    cursor.execute("UPDATE tasks SET description = ?, completed = ? WHERE id = ?",
+                   (description, completed, task_id))  # Corrected parameter order and removed 'task'
+    
     conn.commit()
     conn.close()
+
+
