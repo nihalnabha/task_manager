@@ -1,14 +1,15 @@
 import sqlite3
-from typing import List, Tuple
 import hashlib
-
+from typing import List, Tuple
 
 DB_NAME = "tasks.db"
 
 def setup_db():
-    """Create the tasks table if it doesn't exist."""
+    """Create the tasks and users tables if they don't exist."""
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
+
+    # Create the tasks table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS tasks (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -17,8 +18,8 @@ def setup_db():
             completed INTEGER DEFAULT 0
         )
     """)
-    
-    # Create users table
+
+    # Create the users table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -27,7 +28,7 @@ def setup_db():
         )
     """)
 
-    # Check if admin user exists, and add it if not
+    # Add a default admin user if no users exist
     cursor.execute("SELECT COUNT(*) FROM users")
     if cursor.fetchone()[0] == 0:
         default_username = "admin"
@@ -39,6 +40,39 @@ def setup_db():
     conn.commit()
     conn.close()
 
+def authenticate_user(username: str, password: str) -> bool:
+    """Authenticate a user by their username and password."""
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    # Hash the provided password
+    hashed_password = hashlib.sha256(password.encode()).hexdigest()
+
+    # Query to check if the user exists with the given username and password
+    cursor.execute("SELECT id FROM users WHERE username = ? AND password = ?", (username, hashed_password))
+    user = cursor.fetchone()
+
+    conn.close()
+    return user is not None
+
+def add_user(username: str, password: str):
+    """Add a new user to the database."""
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+
+    # Hash the password before storing
+    hashed_password = hashlib.sha256(password.encode()).hexdigest()
+
+    try:
+        cursor.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, hashed_password))
+        conn.commit()
+        print(f"User '{username}' added successfully!")
+    except sqlite3.IntegrityError:
+        print(f"Error: Username '{username}' already exists.")
+    
+    conn.close()
+
+# Other task-related functions
 def add_task(task: str, description: str = None):
     """Add a task to the database."""
     conn = sqlite3.connect(DB_NAME)
