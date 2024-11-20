@@ -7,40 +7,40 @@ DB_NAME = "tasks.db"
 
 def setup_db():
     """Create the tasks and users tables if they don't exist."""
-    conn = sqlite3.connect(DB_NAME)  # Connect to the SQLite database
+    conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
 
-    # Create the 'tasks' table if it does not exist
+    # Create the tasks table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS tasks (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,  # Auto-incrementing ID
-            task TEXT NOT NULL,                    # Task name, cannot be NULL
-            description TEXT DEFAULT 'No description',  # Default description if none provided
-            completed INTEGER DEFAULT 0           # Default completed status is 0 (not done)
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            task TEXT NOT NULL,
+            description TEXT DEFAULT 'No description',
+            completed INTEGER DEFAULT 0
         )
     """)
 
-    # Create the 'users' table if it does not exist
+    # Create the users table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,  # Auto-incrementing ID
-            username TEXT UNIQUE NOT NULL,         # Unique username, cannot be NULL
-            password TEXT NOT NULL                 # Password, cannot be NULL
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL
         )
     """)
 
-    # Add a default admin user if no users exist in the database
+    # Add a default admin user if no users exist
     cursor.execute("SELECT COUNT(*) FROM users")
-    if cursor.fetchone()[0] == 0:  # If no users exist
+    if cursor.fetchone()[0] == 0:
         default_username = "admin"
         default_password = "admin123"
-        hashed_password = hashlib.sha256(default_password.encode()).hexdigest()  # Hash the default password
-        cursor.execute("INSERT INTO users (username, password) VALUES (?, ?)", 
-                       (default_username, hashed_password))
+        hashed_password = hashlib.sha256(default_password.encode()).hexdigest()
+        cursor.execute("INSERT INTO users (username, password) VALUES (?, ?)", (default_username, hashed_password))
         print(f"Default admin user created: Username: {default_username}, Password: {default_password}")
 
-    conn.commit()  # Save the changes
-    conn.close()   # Close the database connection
+    conn.commit()
+    conn.close()
+
 
 def authenticate_user(username: str, password: str) -> bool:
     """Authenticate a user by their username and password."""
@@ -106,14 +106,23 @@ def get_tasks() -> List[Tuple[int, str, str, int]]:
     return tasks  # Return the list of tasks
 
 def delete_task(task_id: int):
-    """Delete a task by its ID."""
-    conn = sqlite3.connect(DB_NAME)  # Connect to the SQLite database
+    """Delete a task by its ID, and notify if the ID does not exist."""
+    conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
 
-    # Delete the task with the given ID
-    cursor.execute("DELETE FROM tasks WHERE id = ?", (task_id,))
-    conn.commit()  # Save the changes
-    conn.close()  # Close the database connection
+    # Check if the task exists
+    cursor.execute("SELECT * FROM tasks WHERE id = ?", (task_id,))
+    task = cursor.fetchone()
+
+    if not task:
+        print(f"No task found with ID {task_id}.")  # Notify the user
+    else:
+        # If task exists, delete it
+        cursor.execute("DELETE FROM tasks WHERE id = ?", (task_id,))
+        conn.commit()
+        print(f"Task with ID {task_id} deleted successfully.")
+
+    conn.close()
 
 def update_task(task_id: int, description: str, completed: int):
     """Update a task's description and completion status by its ID."""
