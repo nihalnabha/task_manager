@@ -1,67 +1,74 @@
-Task Manager CLI Application
-A simple and interactive command-line application to manage tasks with user authentication, built using Python and SQLite. The app supports adding, updating, deleting, and displaying tasks, with features like authentication and session management for multiple users.
 
-Features
-User Authentication:
+## Steps to Use the Application
 
-Secure login system using hashed passwords.
-Session management for logged-in users.
 
-Task Management:
-
-Add tasks with optional descriptions.
-Update task details and completion status.
-Delete tasks by their unique IDs.
-View all tasks in a tabular format using the rich library.
-
-Database Integration:
-
-Persistent task storage with SQLite.
-Automatic database setup for first-time use.
-
-Requirements
-Make sure you have the following installed:
-Python 3.7 or later
-Required Python libraries:
-typer
-rich
-Install dependencies using pip:
-pip install typer rich
-
-How to Run
-Clone the Repository:
+1. Clone the Repository
+```bash
 git clone https://github.com/yourusername/task-manager-cli.git
 cd task-manager-cli
+```
+2. Install Dependencies
+    Make sure you have Python installed. Install the required libraries using pip:
 
-Initialize the Database: Run the following command to set up the database:
+```bash
+pip install typer rich
+```
+3. Initialize the Database
+    Before using the application, initialize the database:
+
+```bash
 python task.py init
-Start Using the CLI:
-
-Add a new task:
-python task.py add
-Show all tasks:
-python task.py show
-Update a task:
-python task.py update
-Delete a task:
-python task.py delete
-Logout: To log out of the application, run:
-python task.py logout
-
-Application Commands
+```
+4. Log In to the Application
+    When you run any command, you’ll be prompted to log in. Use the default admin credentials for the first time
+```bash
+Username: admin
+Password: admin123
+```
+5. Available Commands
+    Use the following commands to interact with the application:
+```bash
 Command	Description
-init	Initialize the database
-add-	Add a new task
-show-	Show all tasks
-update-	Update an existing task
-delete-	Delete a task by ID
-logout-	Logout from the current session
+python task.py  add	       Add a new task.
+python task.py show	       Display all tasks in a table format.
+python task.py update	   Update a task's description or status.
+python task.py delete	   Delete a task by its ID.
+python task.py logout	   Log out from the application.
+```
+6. Example Usage
+    
+    Add a Task:
+ ```bash
+python task.py add
+```
+Enter the task name and description when prompted.
+ 
 
-Project Structure
-task-manager-cli/
-│
-├── task.py       # Main CLI application
-├── database.py   # Database setup and helper functions
-├── model.py      # Task model definition
-└── README.md     # Project documentation
+Show All Tasks:
+ ```bash
+python task.py show
+```
+Enter the task ID, new description, and completion status.
+
+Update a Task:
+ ```bash
+python task.py update
+```
+Enter the task ID, new description, and completion status.
+
+Delete a Task:
+
+ ```bash
+python task.py delete
+```
+Enter the task ID to remove it from the database.
+
+
+Log Out:
+ ```bash
+python task.py logout
+```
+
+
+
 
