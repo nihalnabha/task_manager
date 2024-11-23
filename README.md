@@ -4,8 +4,8 @@
 
 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/task-manager-cli.git
-cd task-manager-cli
+git clone https://github.com/yourusername/task_manager.git
+cd task_manager
 ```
 2. Install Dependencies
     Make sure you have Python installed. Install the required libraries using pip:
