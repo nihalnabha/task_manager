@@ -13,7 +13,7 @@ cd task_manager
 ```bash
 pip install typer rich
 ```
-3. Initialize the Database
+3. Open cmd initialize the Database
     Before using the application, initialize the database:
 
 ```bash
