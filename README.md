@@ -4,7 +4,7 @@
 
 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/task_manager.git
+git clone https://github.com/nihalnabha/task_manager.git
 cd task_manager
 ```
 2. Install Dependencies
@@ -48,7 +48,7 @@ Show All Tasks:
  ```bash
 python task.py show
 ```
-Enter the task ID, new description, and completion status.
+Shows the task table and completion status.
 
 Update a Task:
  ```bash
